@@ -1,0 +1,34 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import ListingForm from '../components/ListingForm.astro';
+---
+
+<Layout title="Post New Listing">
+  <Header />
+  
+  <main class="main">
+    <div class="form-container">
+      <h1 class="form-title">Create New Listing</h1>
+      <ListingForm />
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .main {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+  }
+  .form-container {
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+  }
+  .form-title {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+    color: var(--text-primary);
+  }
+</style>

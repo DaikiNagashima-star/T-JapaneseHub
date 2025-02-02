@@ -1,0 +1,67 @@
+---
+import { facebookConfig } from '../config/facebook';
+
+interface Props {
+  recipientId?: string;
+}
+
+const { recipientId } = Astro.props;
+---
+
+<div class="messenger-chat">
+  <button class="messenger-button" id="messengerButton">
+    <svg class="messenger-icon" viewBox="0 0 24 24" width="24" height="24">
+      <path d="M12 2C6.36 2 2 6.13 2 11.7c0 2.91 1.19 5.44 3.14 7.17.16.14.26.39.24.63l-.12 1.95c-.04.6.61.98 1.13.68l2.18-1.27c.2-.12.44-.15.66-.08.93.27 1.92.42 2.95.42 5.64 0 10-4.13 10-9.7C22 6.13 17.64 2 12 2z" fill="#0084FF"/>
+    </svg>
+    Send Message
+  </button>
+</div>
+
+<script define:vars={{ pageId: facebookConfig.pageId, appId: facebookConfig.appId, recipientId }}>
+  // Load Facebook SDK
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId: appId,
+      xfbml: true,
+      version: 'v18.0'
+    });
+  };
+
+  (function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = 'https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js';
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+
+  // Handle messenger button click
+  document.getElementById('messengerButton')?.addEventListener('click', () => {
+    const messengerUrl = recipientId 
+      ? `https://m.me/${recipientId}`
+      : `https://m.me/${pageId}`;
+    window.open(messengerUrl, '_blank');
+  });
+</script>
+
+<style>
+  .messenger-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #0084FF;
+    color: white;
+    padding: 0.75rem 1rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .messenger-button:hover {
+    opacity: 0.9;
+  }
+  .messenger-icon {
+    fill: currentColor;
+  }
+</style>

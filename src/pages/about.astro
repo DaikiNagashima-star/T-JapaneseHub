@@ -1,0 +1,71 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+---
+
+<Layout title="About Us">
+  <Header />
+  
+  <main class="main">
+    <div class="about-container">
+      <h1 class="about-title">About Iamalog</h1>
+      
+      <div class="about-content">
+        <p>
+          Welcome to Iamalog, your community marketplace for houses, jobs, and more. 
+          We connect people who want to buy, sell, rent, or find opportunities in a 
+          simple and efficient way.
+        </p>
+        
+        <h2>Our Mission</h2>
+        <p>
+          To create a trusted platform where community members can easily connect 
+          and exchange goods, services, and opportunities.
+        </p>
+
+        <h2>Contact Us</h2>
+        <p>
+          Have questions or suggestions? Reach out to us at:
+          <a href="mailto:support@iamalog.com">support@iamalog.com</a>
+        </p>
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .main {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+  }
+  .about-container {
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+  }
+  .about-title {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    color: var(--text-primary);
+  }
+  .about-content {
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+  .about-content h2 {
+    color: var(--text-primary);
+    font-size: 1.5rem;
+    margin: 2rem 0 1rem;
+  }
+  .about-content p {
+    margin-bottom: 1rem;
+  }
+  .about-content a {
+    color: var(--primary);
+    text-decoration: none;
+  }
+  .about-content a:hover {
+    text-decoration: underline;
+  }
+</style>

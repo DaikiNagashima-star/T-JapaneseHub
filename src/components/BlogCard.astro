@@ -1,0 +1,72 @@
+---
+interface Props {
+  number: string;
+  category: string;
+  time: string;
+  title: string;
+  image: string;
+}
+
+const { number, category, time, title, image } = Astro.props;
+---
+
+<article class="blog-card">
+  <img src={image} alt={title} class="blog-image" />
+  <div class="blog-content">
+    <div class="blog-meta">
+      <span class="blog-number">{number}</span>
+      <span class="blog-category">{category}</span>
+      <span class="blog-time">{time}</span>
+    </div>
+    <h3 class="blog-title">{title}</h3>
+  </div>
+</article>
+
+<style>
+  .blog-card {
+    display: flex;
+    gap: 1rem;
+    background: var(--background);
+    border-radius: 0.75rem;
+    overflow: hidden;
+    transition: transform 0.2s;
+    cursor: pointer;
+  }
+  .blog-card:hover {
+    transform: translateY(-2px);
+  }
+  .blog-image {
+    width: 120px;
+    height: 100px;
+    object-fit: cover;
+  }
+  .blog-content {
+    padding: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .blog-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+  .blog-number {
+    font-weight: 600;
+    color: var(--primary);
+  }
+  .blog-category {
+    color: var(--primary);
+    font-size: 0.875rem;
+  }
+  .blog-time {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+  }
+  .blog-title {
+    font-size: 1rem;
+    color: var(--text-primary);
+    line-height: 1.4;
+  }
+</style>

@@ -1,0 +1,18 @@
+---
+import { supabase } from '../../lib/supabase';
+import GuestMenu from './GuestMenu.astro';
+import UserMenu from './UserMenu.astro';
+
+const { data: { session } } = await supabase.auth.getSession();
+const user = session?.user;
+---
+
+<div class="profile-menu">
+  {user ? <UserMenu user={user} /> : <GuestMenu />}
+</div>
+
+<style>
+  .profile-menu {
+    position: relative;
+  }
+</style>

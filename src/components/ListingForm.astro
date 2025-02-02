@@ -1,0 +1,253 @@
+---
+import FormField from './forms/FormField.astro';
+import HouseOptions from './forms/HouseOptions.astro';
+import MarketOptions from './forms/MarketOptions.astro';
+import JobOptions from './forms/JobOptions.astro';
+
+const categoryOptions = [
+  { value: 'house', label: 'House for Rent' },
+  { value: 'market', label: 'Marketplace' },
+  { value: 'job', label: 'Job' },
+  { value: 'others', label: 'Others' }
+];
+---
+
+<form class="post-form" id="postForm">
+  <FormField
+    label="Category"
+    name="category"
+    type="select"
+    required={true}
+    options={categoryOptions}
+  />
+
+  <div id="categoryFields">
+    <div id="houseOptions" style="display: none;">
+      <HouseOptions />
+    </div>
+    <div id="marketOptions" style="display: none;">
+      <MarketOptions />
+    </div>
+    <div id="jobOptions" style="display: none;">
+      <JobOptions />
+    </div>
+  </div>
+
+  <FormField
+    label="Title"
+    name="title"
+    required={true}
+    minLength={3}
+    maxLength={200}
+    hint="Must be between 3 and 200 characters"
+  />
+
+  <FormField
+    label="Description"
+    name="description"
+    type="textarea"
+    required={true}
+    minLength={3}
+    maxLength={5000}
+  />
+
+  <FormField
+    label="Price"
+    name="price"
+    type="number"
+  />
+
+  <FormField
+    label="Image URL"
+    name="image"
+    type="url"
+    required={true}
+    placeholder="https://example.com/image.jpg"
+  />
+
+  <FormField
+    label="Location"
+    name="address"
+    required={true}
+  />
+
+  <div class="contact-fields">
+    <h2>Contact Information</h2>
+    <FormField
+      label="Name"
+      name="contactName"
+      required={true}
+    />
+    <FormField
+      label="Email"
+      name="contactEmail"
+      type="email"
+      required={true}
+    />
+    <FormField
+      label="Phone (optional)"
+      name="contactPhone"
+      type="tel"
+    />
+  </div>
+
+  <button type="submit" class="submit-button">Post Listing</button>
+</form>
+
+<script>
+  import { getCoordinates } from '../utils/geocoding';
+  import { createListing } from '../services/listingService';
+
+  function showCategoryOptions(category: string) {
+    const options = ['house', 'market', 'job'];
+    options.forEach(opt => {
+      const element = document.getElementById(`${opt}Options`);
+      if (element) {
+        element.style.display = category === opt ? 'block' : 'none';
+      }
+    });
+  }
+
+  // Handle category change
+  document.querySelector('select[name="category"]')?.addEventListener('change', (e) => {
+    const category = (e.target as HTMLSelectElement).value;
+    showCategoryOptions(category);
+  });
+
+  // Initialize with default category
+  document.addEventListener('DOMContentLoaded', () => {
+    const category = (document.querySelector('select[name="category"]') as HTMLSelectElement)?.value;
+    if (category) {
+      showCategoryOptions(category);
+    }
+  });
+
+  // Form submission
+  document.getElementById('postForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const form = e.target as HTMLFormElement;
+    const formData = new FormData(form);
+    
+    try {
+      const submitButton = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+      submitButton.disabled = true;
+      submitButton.textContent = 'Creating listing...';
+
+      // Get category-specific data
+      const category = formData.get('category') as string;
+      console.log(category);
+      let categoryDetails = {};
+
+          if (category === 'house') {
+      const utilities = Array.from(form.querySelectorAll('input[name="utilities"]:checked'))
+        .map(cb => (cb as HTMLInputElement).value);
+      const features = Array.from(form.querySelectorAll('input[name="features"]:checked'))
+        .map(cb => (cb as HTMLInputElement).value);
+      categoryDetails = {
+        house_details: {
+          bedrooms: formData.get('bedrooms'),
+          bathrooms: formData.get('bathrooms'),
+          petPolicy: formData.get('petPolicy'),
+          availableDate: formData.get('availableDate') || null, // Ensure it's accessed only if present
+          utilities,
+          features,
+        },
+      };
+    } 
+    else if (category === 'market') {
+      const features = Array.from(form.querySelectorAll('input[name="features"]:checked'))
+        .map(cb => (cb as HTMLInputElement).value);
+      categoryDetails = {
+        market_details: {
+          condition: formData.get('condition') || '', // Ensure fields exist
+          brand: formData.get('brand') || '',
+          model: formData.get('model') || '',
+          originalPrice: formData.get('originalPrice') || null,
+          features,
+        },
+      };
+    } else if (category === 'job') {
+      const benefits = Array.from(form.querySelectorAll('input[name="benefits"]:checked'))
+        .map(cb => (cb as HTMLInputElement).value);
+      categoryDetails = {
+        job_details: {
+          employmentType: formData.get('employmentType') || '',
+          experienceLevel: formData.get('experienceLevel') || '',
+          benefits,
+          deadline: formData.get('deadline') || null,
+        },
+      };
+    }
+      const address = formData.get('address') as string;
+      const coordinates = await getCoordinates(address);
+
+      const listing = {
+        category: formData.get('category') as 'house' | 'market' | 'job' | 'others',
+        title: formData.get('title') as string,
+        description: formData.get('description') as string,
+        price: formData.get('price') ? Number(formData.get('price')) : undefined,
+        image: formData.get('image') as string,
+        location: {
+          address,
+          ...coordinates
+        },
+        contact: {
+          name: formData.get('contactName') as string,
+          email: formData.get('contactEmail') as string,
+          phone: formData.get('contactPhone') as string || undefined
+        },
+        ...categoryDetails
+      };
+
+      const result = await createListing(listing);
+      
+      if (result) {
+        window.location.href = '/';
+      } else {
+        throw new Error('Failed to create listing');
+      }
+    } catch (error) {
+      console.error('Error creating listing:', error);
+      alert(error instanceof Error ? error.message : 'Error creating listing. Please try again.');
+      
+      const submitButton = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+      submitButton.disabled = false;
+      submitButton.textContent = 'Post Listing';
+    }
+  });
+</script>
+
+<style>
+  .post-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .contact-fields {
+    border-top: 1px solid #e5e7eb;
+    padding-top: 1.5rem;
+    margin-top: 1rem;
+  }
+  .contact-fields h2 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+  }
+  .submit-button {
+    background: var(--primary);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .submit-button:hover:not(:disabled) {
+    opacity: 0.9;
+  }
+  .submit-button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+</style>

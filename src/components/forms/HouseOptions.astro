@@ -1,0 +1,133 @@
+---
+import FormField from './FormField.astro';
+
+const bedOptions = [
+  { value: 'studio', label: 'Studio' },
+  { value: '1', label: '1 Bedroom' },
+  { value: '2', label: '2 Bedrooms' },
+  { value: '3', label: '3 Bedrooms' },
+  { value: '4plus', label: '4+ Bedrooms' }
+];
+
+const bathOptions = [
+  { value: '1', label: '1 Bathroom' },
+  { value: '1.5', label: '1.5 Bathrooms' },
+  { value: '2', label: '2 Bathrooms' },
+  { value: '2plus', label: '2+ Bathrooms' }
+];
+
+const petOptions = [
+  { value: 'no_pets', label: 'No Pets Allowed' },
+  { value: 'cats', label: 'Cats Allowed' },
+  { value: 'small_dogs', label: 'Small Dogs Allowed' },
+  { value: 'all_pets', label: 'All Pets Allowed' }
+];
+---
+
+<div class="house-options">
+  <FormField
+    label="Bedrooms"
+    name="bedrooms"
+    type="select"
+    required={true}
+    options={bedOptions}
+  />
+
+  <FormField
+    label="Bathrooms"
+    name="bathrooms"
+    type="select"
+    required={true}
+    options={bathOptions}
+  />
+
+  <FormField
+    label="Pet Policy"
+    name="petPolicy"
+    type="select"
+    required={true}
+    options={petOptions}
+  />
+
+  <div class="checkbox-group">
+    <h3>Utilities Included</h3>
+    <div class="checkboxes">
+      <label class="checkbox-label">
+        <input type="checkbox" name="utilities" value="water"> Water
+      </label>
+      <label class="checkbox-label">
+        <input type="checkbox" name="utilities" value="electricity"> Electricity
+      </label>
+      <label class="checkbox-label">
+        <input type="checkbox" name="utilities" value="heat"> Heat
+      </label>
+      <label class="checkbox-label">
+        <input type="checkbox" name="utilities" value="internet"> Internet
+      </label>
+    </div>
+  </div>
+
+  <div class="checkbox-group">
+    <h3>Features</h3>
+    <div class="checkboxes">
+      <label class="checkbox-label">
+        <input type="checkbox" name="features" value="furnished"> Furnished
+      </label>
+      <label class="checkbox-label">
+        <input type="checkbox" name="features" value="parking"> Parking
+      </label>
+      <label class="checkbox-label">
+        <input type="checkbox" name="features" value="laundry"> Laundry
+      </label>
+      <label class="checkbox-label">
+        <input type="checkbox" name="features" value="ac"> Air Conditioning
+      </label>
+    </div>
+  </div>
+
+  <FormField
+    label="Available From"
+    name="availableDate"
+    type="date"
+    required={true}
+  />
+</div>
+
+<style>
+  .house-options {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 1rem;
+    background: var(--background);
+    border-radius: 0.5rem;
+    margin: 1rem 0;
+  }
+  .checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .checkbox-group h3 {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+  .checkboxes {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 0.75rem;
+  }
+  .checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--text-primary);
+    cursor: pointer;
+  }
+  .checkbox-label input[type="checkbox"] {
+    width: 1rem;
+    height: 1rem;
+  }
+</style>

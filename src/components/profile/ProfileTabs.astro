@@ -1,0 +1,49 @@
+---
+const tabs = [
+  { id: 'listings', label: 'My Listings' },
+  { id: 'favorites', label: 'Favorites' },
+  { id: 'settings', label: 'Settings' }
+];
+
+const { activeTab = 'listings' } = Astro.props;
+---
+
+<nav class="profile-tabs">
+  {tabs.map(tab => (
+    <a 
+      href={`/profile/${tab.id}`} 
+      class:list={['tab', { active: tab.id === activeTab }]}
+    >
+      {tab.label}
+    </a>
+  ))}
+</nav>
+
+<style>
+  .profile-tabs {
+    display: flex;
+    gap: 0.5rem;
+    background: white;
+    padding: 0.75rem;
+    border-radius: 0.75rem;
+    border: 1px solid var(--border);
+    margin-bottom: 1.5rem;
+  }
+  .tab {
+    padding: 0.5rem 1rem;
+    text-decoration: none;
+    color: var(--text-secondary);
+    border-radius: 0.5rem;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+  }
+  .tab:hover {
+    background: var(--background);
+    color: var(--text-primary);
+  }
+  .tab.active {
+    background: var(--primary);
+    color: white;
+  }
+</style>

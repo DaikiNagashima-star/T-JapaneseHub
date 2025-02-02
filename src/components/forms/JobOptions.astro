@@ -1,0 +1,106 @@
+---
+import FormField from './FormField.astro';
+
+const employmentTypeOptions = [
+  { value: 'full_time', label: 'Full-time' },
+  { value: 'part_time', label: 'Part-time' },
+  { value: 'contract', label: 'Contract' },
+  { value: 'temporary', label: 'Temporary' },
+  { value: 'internship', label: 'Internship' }
+];
+
+const experienceLevelOptions = [
+  { value: 'entry', label: 'Entry Level' },
+  { value: 'junior', label: 'Junior (1-3 years)' },
+  { value: 'mid', label: 'Mid Level (3-5 years)' },
+  { value: 'senior', label: 'Senior (5+ years)' },
+  { value: 'lead', label: 'Lead/Manager' }
+];
+---
+
+<div class="job-options">
+  <FormField
+    label="Employment Type"
+    name="employmentType"
+    type="select"
+    required={true}
+    options={employmentTypeOptions}
+  />
+
+  <FormField
+    label="Experience Level"
+    name="experienceLevel"
+    type="select"
+    required={true}
+    options={experienceLevelOptions}
+  />
+
+  <div class="checkbox-group">
+    <h3>Benefits</h3>
+    <div class="checkboxes">
+      <label class="checkbox-label">
+        <input type="checkbox" name="benefits" value="health"> Health Insurance
+      </label>
+      <label class="checkbox-label">
+        <input type="checkbox" name="benefits" value="dental"> Dental Coverage
+      </label>
+      <label class="checkbox-label">
+        <input type="checkbox" name="benefits" value="vision"> Vision Coverage
+      </label>
+      <label class="checkbox-label">
+        <input type="checkbox" name="benefits" value="rrsp"> RRSP Matching
+      </label>
+      <label class="checkbox-label">
+        <input type="checkbox" name="benefits" value="vacation"> Paid Vacation
+      </label>
+      <label class="checkbox-label">
+        <input type="checkbox" name="benefits" value="remote"> Remote Work
+      </label>
+    </div>
+  </div>
+
+  <FormField
+    label="Application Deadline"
+    name="deadline"
+    type="date"
+  />
+</div>
+
+<style>
+  .job-options {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 1rem;
+    background: var(--background);
+    border-radius: 0.5rem;
+    margin: 1rem 0;
+  }
+  .checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .checkbox-group h3 {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+  .checkboxes {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 0.75rem;
+  }
+  .checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--text-primary);
+    cursor: pointer;
+  }
+  .checkbox-label input[type="checkbox"] {
+    width: 1rem;
+    height: 1rem;
+  }
+</style>

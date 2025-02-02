@@ -1,0 +1,44 @@
+---
+interface Props {
+  title: string;
+  subtitle: string;
+  image: string;
+}
+
+const { title, subtitle, image } = Astro.props;
+---
+
+<article class="featured-post">
+  <img src={image} alt={title} class="featured-image" />
+  <div class="featured-content">
+    <h1 class="featured-title">{title}</h1>
+    <p class="featured-subtitle">{subtitle}</p>
+  </div>
+</article>
+
+<style>
+  .featured-post {
+    background: white;
+    border-radius: 1rem;
+    overflow: hidden;
+  }
+  .featured-image {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+  }
+  .featured-content {
+    padding: 2rem;
+  }
+  .featured-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+  }
+  .featured-subtitle {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    line-height: 1.6;
+  }
+</style>

@@ -1,0 +1,115 @@
+---
+import SmallMap from '../maps/SmallMap.astro';
+
+interface Props {
+  location: {
+    address: string;
+    lat: number;
+    lng: number;
+  };
+}
+
+const { location } = Astro.props;
+
+function formatAddress(address: string) {
+  return address
+    .split(',')
+    .map(part => part.trim())
+    .filter(Boolean)
+    .join(', ');
+}
+---
+
+<div class="location-card">
+  <h2 class="card-title">
+    <svg class="icon" viewBox="0 0 24 24" width="20" height="20">
+      <path fill="currentColor" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+    </svg>
+    Location
+  </h2>
+  
+  <div class="location-details">
+    <div class="address-container">
+      <svg class="address-icon" viewBox="0 0 24 24" width="16" height="16">
+        <path fill="currentColor" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z"/>
+      </svg>
+      <p class="address">{formatAddress(location.address)}</p>
+    </div>
+
+    <div class="map-wrapper">
+      <SmallMap lat={location.lat} lng={location.lng} height="180px" />
+    </div>
+    
+    <a 
+      href={`https://www.google.com/maps/search/?api=1&query=${location.lat},${location.lng}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="map-link"
+    >
+      View on Google Maps
+      <svg class="external-icon" viewBox="0 0 24 24" width="14" height="14">
+        <path fill="currentColor" d="M19 19H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/>
+      </svg>
+    </a>
+  </div>
+</div>
+
+<style>
+  .location-card {
+    background: white;
+    border-radius: 0.75rem;
+    padding: 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  .card-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+  }
+  .icon {
+    color: var(--primary);
+  }
+  .location-details {
+    color: var(--text-secondary);
+  }
+  .address-container {
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+    padding: 0.75rem;
+    background: var(--background);
+    border-radius: 0.5rem;
+  }
+  .address-icon {
+    color: var(--primary);
+    flex-shrink: 0;
+    margin-top: 0.125rem;
+  }
+  .address {
+    line-height: 1.4;
+    font-size: 0.8rem;
+    color: var(--text-primary);
+  }
+  .map-wrapper {
+    margin: 0.75rem 0;
+  }
+  .map-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.8rem;
+  }
+  .map-link:hover {
+    text-decoration: underline;
+  }
+  .external-icon {
+    margin-top: 1px;
+  }
+</style>

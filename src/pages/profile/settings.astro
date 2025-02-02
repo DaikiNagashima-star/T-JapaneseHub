@@ -1,0 +1,148 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import ProfileHeader from '../../components/profile/ProfileHeader.astro';
+import ProfileTabs from '../../components/profile/ProfileTabs.astro';
+import { supabase } from '../../lib/supabase';
+
+// Get current user
+const { data: { session } } = await supabase.auth.getSession();
+
+// Redirect if not logged in
+if (!session) {
+  return Astro.redirect('/');
+}
+---
+
+<Layout title="Profile Settings">
+  <Header />
+  
+  <main class="main">
+    <ProfileHeader />
+    <ProfileTabs activeTab="settings" />
+    
+    <div class="settings-container">
+      <h2 class="section-title">Account Settings</h2>
+      
+      <form class="settings-form" id="settingsForm">
+        <div class="form-group">
+          <label for="name">Display Name</label>
+          <input 
+            type="text" 
+            id="name" 
+            name="name" 
+            value={session.user.user_metadata.full_name || ''}
+            placeholder="Enter your name"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input 
+            type="email" 
+            id="email" 
+            value={session.user.email}
+            disabled
+          />
+          <span class="input-hint">Email cannot be changed</span>
+        </div>
+
+        <button type="submit" class="save-button">Save Changes</button>
+      </form>
+    </div>
+  </main>
+</Layout>
+
+<script>
+  import { supabase } from '../../lib/supabase';
+
+  const form = document.getElementById('settingsForm') as HTMLFormElement;
+  
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(form);
+    
+    try {
+      const { data, error } = await supabase.auth.updateUser({
+        data: {
+          full_name: formData.get('name')
+        }
+      });
+
+      if (error) throw error;
+      
+      alert('Profile updated successfully!');
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      alert('Failed to update profile. Please try again.');
+    }
+  });
+</script>
+
+<style>
+  .main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+  }
+  .settings-container {
+    background: white;
+    padding: 2rem;
+    border-radius: 0.75rem;
+    border: 1px solid var(--border);
+  }
+  .section-title {
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+    color: var(--text-primary);
+  }
+  .settings-form {
+    max-width: 500px;
+  }
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+  .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+  }
+  .form-group input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    font-size: 0.9rem;
+    transition: border-color 0.2s ease;
+  }
+  .form-group input:focus {
+    outline: none;
+    border-color: var(--primary);
+  }
+  .form-group input:disabled {
+    background: var(--background);
+    cursor: not-allowed;
+  }
+  .input-hint {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+  }
+  .save-button {
+    background: var(--primary);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+  }
+  .save-button:hover {
+    opacity: 0.9;
+  }
+</style>

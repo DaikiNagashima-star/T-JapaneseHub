@@ -1,0 +1,51 @@
+---
+import { supabase } from '../../lib/supabase';
+
+const { data: { session } } = await supabase.auth.getSession();
+const user = session?.user;
+---
+
+<div class="profile-header">
+  <div class="profile-info">
+    <img 
+      src={user?.user_metadata.avatar_url || "https://api.dicebear.com/7.x/avataaars/svg?seed=default"} 
+      alt="Profile" 
+      class="profile-avatar"
+    />
+    <div class="profile-details">
+      <h1 class="profile-name">{user?.user_metadata.full_name || 'User'}</h1>
+      <p class="profile-email">{user?.email}</p>
+    </div>
+  </div>
+</div>
+
+<style>
+  .profile-header {
+    background: white;
+    padding: 2rem;
+    border-radius: 0.75rem;
+    border: 1px solid var(--border);
+    margin-bottom: 1.5rem;
+  }
+  .profile-info {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+  .profile-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--border);
+  }
+  .profile-name {
+    font-size: 1.5rem;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+  }
+  .profile-email {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+  }
+</style>

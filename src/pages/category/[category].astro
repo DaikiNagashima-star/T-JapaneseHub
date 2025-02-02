@@ -1,0 +1,75 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import CategoryNav from '../../components/CategoryNav.astro';
+import ListingCard from '../../components/ListingCard.astro';
+import { getListings } from '../../services/listingService';
+import type { Listing } from '../../types/listing';
+
+export function getStaticPaths() {
+  return [
+    { params: { category: 'all' } },
+    { params: { category: 'house' } },
+    { params: { category: 'market' } },
+    { params: { category: 'job' } },
+    { params: { category: 'others' } },
+  ];
+}
+
+const { category } = Astro.params;
+const listings = await getListings(category);
+---
+
+<Layout title={`${category === 'all' ? 'All Listings' : category.charAt(0).toUpperCase() + category.slice(1)} - Classifieds`}>
+  <Header />
+  
+  <main class="main">
+    <CategoryNav activeCategory={category} />
+    
+    <div class="search-bar">
+      <input type="text" placeholder="Search listings..." class="search-input" />
+    </div>
+
+    <div class="listings-grid">
+      {listings.map(listing => (
+        <ListingCard listing={listing} />
+      ))}
+    </div>
+
+    {listings.length === 0 && (
+      <div class="no-listings">
+        <p>No listings found in this category.</p>
+      </div>
+    )}
+  </main>
+</Layout>
+
+<style>
+  .main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+  }
+  .search-bar {
+    margin-bottom: 2rem;
+  }
+  .search-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+  }
+  .listings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+  .no-listings {
+    text-align: center;
+    padding: 3rem;
+    background: white;
+    border-radius: 0.75rem;
+    color: var(--text-secondary);
+  }
+</style>

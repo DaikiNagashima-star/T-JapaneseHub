@@ -1,0 +1,90 @@
+---
+interface Props {
+  label: string;
+  name: string;
+  type?: 'text' | 'number' | 'email' | 'tel' | 'url' | 'textarea' | 'select';
+  required?: boolean;
+  placeholder?: string;
+  hint?: string;
+  options?: { value: string; label: string; }[];
+  minLength?: number;
+  maxLength?: number;
+}
+
+const { 
+  label, 
+  name, 
+  type = 'text', 
+  required = false,
+  placeholder,
+  hint,
+  options,
+  minLength,
+  maxLength
+} = Astro.props;
+---
+
+<div class="form-group">
+  <label for={name}>{label}</label>
+  
+  {type === 'textarea' ? (
+    <textarea
+      id={name}
+      name={name}
+      required={required}
+      placeholder={placeholder}
+      minlength={minLength}
+      maxlength={maxLength}
+      rows={4}
+    ></textarea>
+  ) : type === 'select' ? (
+    <select id={name} name={name} required={required}>
+{options?.map(option => (
+  <option value={option.value}>{option.label}</option>
+))}
+    </select>
+  ) : (
+    <input
+      type={type}
+      id={name}
+      name={name}
+      placeholder={placeholder}
+      minlength={minLength}
+      maxlength={maxLength}
+    />
+  )}
+  
+  {hint && <span class="input-hint">{hint}</span>}
+</div>
+
+<style>
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .form-group label {
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    padding: 0.75rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+  }
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(26, 86, 219, 0.1);
+  }
+  .input-hint {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+  }
+</style>

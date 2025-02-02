@@ -1,0 +1,43 @@
+---
+import BlogCard from './BlogCard.astro';
+
+interface Props {
+  posts: Array<{
+    number: string;
+    category: string;
+    time: string;
+    title: string;
+    image: string;
+  }>;
+}
+
+const { posts } = Astro.props;
+---
+
+<div class="post-list">
+  <h2 class="list-title">Latest Posts</h2>
+  <div class="posts">
+    {posts.map(post => (
+      <BlogCard {...post} />
+    ))}
+  </div>
+</div>
+
+<style>
+  .post-list {
+    background: white;
+    border-radius: 1rem;
+    padding: 1.5rem;
+  }
+  .list-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: var(--text-primary);
+  }
+  .posts {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+</style>

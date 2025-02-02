@@ -1,0 +1,60 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { supabase } from '../../lib/supabase';
+---
+
+<Layout title="Authenticating...">
+  <div class="loading">
+    <p>Authenticating...</p>
+  </div>
+</Layout>
+
+<script>
+  // Get URL parameters
+  const url = new URL(window.location.href);
+  const code = url.searchParams.get('code');
+  const error = url.searchParams.get('error');
+
+  async function handleCallback() {
+    if (code) {
+      try {
+        // Get code verifier from localStorage
+        const codeVerifier = localStorage.getItem('codeVerifier');
+        
+        if (!codeVerifier) {
+          throw new Error('No code verifier found');
+        }
+
+        // Clear code verifier
+        localStorage.removeItem('codeVerifier');
+
+        const { data, error } = await window.supabase.auth.exchangeCodeForSession(code);
+        
+        if (error) throw error;
+
+        // Successful login
+        window.location.href = '/profile';
+      } catch (error) {
+        console.error('Auth error:', error);
+        window.location.href = '/?error=auth_error';
+      }
+    } else if (error) {
+      window.location.href = '/?error=auth';
+    } else {
+      window.location.href = '/';
+    }
+  }
+
+  // Handle the callback
+  handleCallback();
+</script>
+
+<style>
+  .loading {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+  }
+</style>

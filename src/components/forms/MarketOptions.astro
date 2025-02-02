@@ -1,0 +1,97 @@
+---
+import FormField from './FormField.astro';
+
+const conditionOptions = [
+  { value: 'new', label: 'New' },
+  { value: 'like_new', label: 'Like New' },
+  { value: 'good', label: 'Good' },
+  { value: 'fair', label: 'Fair' },
+  { value: 'for_parts', label: 'For Parts' }
+];
+---
+
+<div class="market-options">
+  <FormField
+    label="Condition"
+    name="condition"
+    type="select"
+    required={true}
+    options={conditionOptions}
+  />
+
+  <FormField
+    label="Brand"
+    name="brand"
+    placeholder="e.g., Samsung, Apple, IKEA"
+  />
+
+  <FormField
+    label="Model"
+    name="model"
+    placeholder="Product model or version"
+  />
+
+  <FormField
+    label="Original Price"
+    name="originalPrice"
+    type="number"
+    placeholder="Original purchase price"
+  />
+
+  <div class="checkbox-group">
+    <h3>Features</h3>
+    <div class="checkboxes">
+      <label class="checkbox-label">
+        <input type="checkbox" name="features" value="warranty"> Warranty Available
+      </label>
+      <label class="checkbox-label">
+        <input type="checkbox" name="features" value="receipt"> Original Receipt
+      </label>
+      <label class="checkbox-label">
+        <input type="checkbox" name="features" value="box"> Original Box
+      </label>
+      <label class="checkbox-label">
+        <input type="checkbox" name="features" value="accessories"> All Accessories
+      </label>
+    </div>
+  </div>
+</div>
+
+<style>
+  .market-options {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 1rem;
+    background: var(--background);
+    border-radius: 0.5rem;
+    margin: 1rem 0;
+  }
+  .checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .checkbox-group h3 {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+  .checkboxes {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 0.75rem;
+  }
+  .checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--text-primary);
+    cursor: pointer;
+  }
+  .checkbox-label input[type="checkbox"] {
+    width: 1rem;
+    height: 1rem;
+  }
+</style>

@@ -1,0 +1,81 @@
+---
+import GoogleLogin from './GoogleLogin.astro';
+---
+
+<div class="auth-buttons">
+  <GoogleLogin />
+  <div class="divider">
+    <span>or</span>
+  </div>
+  <button id="signOut" class="sign-out-btn" style="display: none;">
+    Sign Out
+  </button>
+</div>
+
+<script>
+  import { supabase } from '../lib/supabase';
+
+  // Handle sign out
+  document.getElementById('signOut')?.addEventListener('click', async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      window.location.reload();
+    } catch (error) {
+      console.error('Error signing out:', error);
+      alert('Failed to sign out. Please try again.');
+    }
+  });
+
+  // Check auth state and update UI
+  supabase.auth.onAuthStateChange((event, session) => {
+    const signOutBtn = document.getElementById('signOut');
+    const googleBtn = document.getElementById('googleLogin');
+    
+    if (session) {
+      signOutBtn?.style.setProperty('display', 'block');
+      googleBtn?.style.setProperty('display', 'none');
+    } else {
+      signOutBtn?.style.setProperty('display', 'none');
+      googleBtn?.style.setProperty('display', 'block');
+    }
+  });
+</script>
+
+<style>
+  .auth-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+    max-width: 320px;
+  }
+  .divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: var(--text-secondary);
+  }
+  .divider::before,
+  .divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  .divider span {
+    padding: 0 0.5rem;
+  }
+  .sign-out-btn {
+    padding: 0.75rem;
+    border: none;
+    border-radius: 0.5rem;
+    background: #ef4444;
+    color: white;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .sign-out-btn:hover {
+    opacity: 0.9;
+  }
+</style>

@@ -1,0 +1,48 @@
+---
+const categories = [
+  { id: 'all', label: 'All Listings' },
+  { id: 'house', label: 'Houses for Rent' },
+  { id: 'market', label: 'Marketplace' },
+  { id: 'job', label: 'Jobs' },
+  { id: 'others', label: 'Others' }
+];
+
+const { activeCategory = 'all' } = Astro.props;
+---
+
+<nav class="categories">
+  {categories.map(category => (
+    <a 
+      href={`/category/${category.id}`} 
+      class:list={[
+        'category-link',
+        { active: category.id === activeCategory }
+      ]}
+    >
+      {category.label}
+    </a>
+  ))}
+</nav>
+
+<style>
+  .categories {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    background: white;
+    border-radius: 2rem;
+    margin-bottom: 2rem;
+  }
+  .category-link {
+    text-decoration: none;
+    color: var(--text-primary);
+    padding: 0.5rem 1rem;
+    border-radius: 1.5rem;
+    font-weight: 500;
+  }
+  .category-link:hover,
+  .category-link.active {
+    background: var(--primary);
+    color: white;
+  }
+</style>

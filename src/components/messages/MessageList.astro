@@ -1,0 +1,97 @@
+---
+import { getMessageThreads } from '../../services/messageService';
+const threads = await getMessageThreads();
+---
+
+<div class="message-list">
+  <div class="list-header">
+    <h2>Messages</h2>
+  </div>
+  
+  <div class="threads">
+    {threads.map(thread => (
+      <a href={`/messages/${thread.id}`} class="thread-item">
+        <img src={thread.avatar} alt="" class="thread-avatar" />
+        <div class="thread-content">
+          <div class="thread-name">{thread.name}</div>
+          <div class="thread-preview">{thread.lastMessage}</div>
+        </div>
+        <div class="thread-meta">
+          <span class="thread-time">{thread.lastMessageTime}</span>
+          {thread.unreadCount > 0 && (
+            <span class="unread-badge">{thread.unreadCount}</span>
+          )}
+        </div>
+      </a>
+    ))}
+  </div>
+</div>
+
+<style>
+  .message-list {
+    border-right: 1px solid #e5e7eb;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  .list-header {
+    padding: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  .list-header h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+  .threads {
+    flex: 1;
+    overflow-y: auto;
+  }
+  .thread-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    text-decoration: none;
+    color: inherit;
+    transition: background-color 0.2s;
+  }
+  .thread-item:hover {
+    background: #f9fafb;
+  }
+  .thread-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+  }
+  .thread-content {
+    flex: 1;
+    min-width: 0;
+  }
+  .thread-name {
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+  }
+  .thread-preview {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .thread-meta {
+    text-align: right;
+    font-size: 0.75rem;
+  }
+  .thread-time {
+    color: var(--text-secondary);
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+  .unread-badge {
+    background: var(--primary);
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 1rem;
+    font-size: 0.75rem;
+  }
+</style>

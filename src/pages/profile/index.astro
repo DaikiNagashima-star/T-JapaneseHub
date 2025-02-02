@@ -1,0 +1,148 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import { supabase } from '../../lib/supabase';
+
+// Get current user
+const { data: { session } } = await supabase.auth.getSession();
+---
+
+<Layout title="Profile">
+  <Header />
+  
+  <main class="main">
+    {session ? (
+      <div class="profile-container">
+        <!-- Authenticated user view remains the same -->
+        <div class="profile-header">
+          <img 
+            src={session.user.user_metadata.avatar_url || "https://api.dicebear.com/7.x/avataaars/svg?seed=default"} 
+            alt="Profile" 
+            class="profile-avatar"
+          />
+          <div class="profile-info">
+            <h1 class="profile-name">{session.user.user_metadata.full_name || 'User'}</h1>
+            <p class="profile-email">{session.user.email}</p>
+          </div>
+        </div>
+      </div>
+    ) : (
+      <div class="guest-container">
+        <div class="guest-content">
+          <svg class="guest-icon" viewBox="0 0 24 24" width="48" height="48">
+            <path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+          </svg>
+          <h1 class="guest-title">Welcome to T-JapaneseHub</h1>
+          <p class="guest-message">Sign in to access your profile, manage listings, and more!</p>
+          <button id="guestSignIn" class="sign-in-button">
+            <svg class="google-icon" viewBox="0 0 24 24" width="20" height="20">
+              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+            </svg>
+            Sign in with Google
+          </button>
+        </div>
+      </div>
+    )}
+  </main>
+</Layout>
+
+<script>
+  import { supabase } from '../../lib/supabase';
+
+  document.getElementById('guestSignIn')?.addEventListener('click', async () => {
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`
+        }
+      });
+
+      if (error) throw error;
+    } catch (error) {
+      console.error('Error signing in:', error);
+      alert('Failed to sign in. Please try again.');
+    }
+  });
+</script>
+
+<style>
+  .main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+    min-height: calc(100vh - 80px);
+  }
+  .guest-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+  .guest-content {
+    background: white;
+    padding: 3rem;
+    border-radius: 1rem;
+    text-align: center;
+    max-width: 400px;
+    width: 100%;
+  }
+  .guest-icon {
+    color: var(--primary);
+    margin-bottom: 1.5rem;
+  }
+  .guest-title {
+    font-size: 1.5rem;
+    color: var(--text-primary);
+    margin-bottom: 0.75rem;
+  }
+  .guest-message {
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+  }
+  .sign-in-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    background: white;
+    color: var(--text-primary);
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  .sign-in-button:hover {
+    background: #f9fafb;
+  }
+  .profile-container {
+    background: white;
+    border-radius: 1rem;
+    padding: 2rem;
+  }
+  .profile-header {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+  .profile-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  .profile-name {
+    font-size: 1.5rem;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+  }
+  .profile-email {
+    color: var(--text-secondary);
+  }
+</style>

@@ -1,0 +1,85 @@
+---
+// ... existing imports and props ...
+
+const { description, amenities } = Astro.props;
+---
+
+<div class="details-card">
+  <h2 class="card-title">
+    <svg class="icon" viewBox="0 0 24 24" width="20" height="20">
+      <path fill="currentColor" d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+    </svg>
+    Details
+  </h2>
+  
+  <div class="description">
+    {description.split('\n').map(paragraph => (
+      <p>{paragraph}</p>
+    ))}
+  </div>
+
+  {amenities && amenities.length > 0 && (
+    <div class="amenities">
+      <h3>Amenities</h3>
+      <ul>
+        {amenities.map(amenity => (
+          <li>{amenity}</li>
+        ))}
+      </ul>
+    </div>
+  )}
+</div>
+
+<style>
+  .details-card {
+    background: white;
+    border-radius: 0.75rem;
+    padding: 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  .card-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+  }
+  .icon {
+    color: var(--primary);
+  }
+  .description {
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+    font-size: 0.875rem;
+  }
+  .description p {
+    margin-bottom: 0.75rem;
+  }
+  .description p:last-child {
+    margin-bottom: 0;
+  }
+  .amenities {
+    border-top: 1px solid var(--border);
+    padding-top: 1rem;
+  }
+  .amenities h3 {
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    margin-bottom: 0.75rem;
+  }
+  .amenities ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    list-style: none;
+  }
+  .amenities li {
+    background: var(--background);
+    padding: 0.375rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+  }
+</style>
